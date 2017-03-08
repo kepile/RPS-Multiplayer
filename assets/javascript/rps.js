@@ -29,6 +29,7 @@
     var tie1 = 0;
     var tie2 = 0;
     var numPlayers = 0;
+    choiceArr = ["Rock", "Paper", "Scissors"];
 
 
 function updateuser (player, user, wins, loss, ties) {
@@ -42,6 +43,27 @@ function updateuser (player, user, wins, loss, ties) {
         
           });
  };
+
+function establishPage(snap) {
+  console.log("establish Page");
+  user1 = snap[1].user;
+  user2 = snap[2].user;
+  console.log(user1 + user2);
+  $("#players").html("players: "+ user1 + user2);
+  for (var i = 0; i < choiceArr.length; i++) {
+    console.log(choiceArr[i]);
+    var gameBtn = $("<button>").html(choiceArr[i]).attr("class", "choiceBtn").attr("data-choice", choiceArr[i]);
+     $("#game").append(gameBtn);
+   };
+};
+
+ function startgame () {
+  console.log("Start Game");
+  $(document).on("click", ".choiceBtn", function() {
+    console.log("button clicked");
+  })
+      
+    }
 
 
 
@@ -86,10 +108,13 @@ function updateuser (player, user, wins, loss, ties) {
     // room.child("position/start").on("value", onChange);
 games.on('child_added', function(snapshot) {
  console.log("onchildadded " + numPlayers + " " + snapshot.val());
-       if (numPlayers === 2) {
-       
-      startgame(snapshot);
-      }
+       if (numPlayers >= 1) {
+           games.once("value")
+              .then(function(snapshot) {
+                establishPage(snapshot.val())
+                startgame(snapshot.val());
+            });
+        }
 
 });
 

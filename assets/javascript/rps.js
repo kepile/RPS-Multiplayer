@@ -120,8 +120,15 @@ function updatePage() {
       var tempBtn = $("<button>").html("Log out").attr("class", "logout");
       $("#signOut").append(tempBtn);
       $("#connect").html("");
+      console.log(numPlayers);
+      if (numPlayers === 1) {
+       console.log("call modal from update page "+" action:"+action+ player);
+   
+        showModal();
+      }; 
+     
       console.log("updatePage button added" + action);
-    };
+  };
 
 
   if (action === "end") {
@@ -131,7 +138,7 @@ function updatePage() {
        $("#commentDisp").empty();
       displaySignin();
       };
-  };
+};
 
 
 
@@ -147,12 +154,15 @@ function addUser(event){
       games.once("value")
         .then(function(snapshot) {
            // determine the number of people playing
-           numPlayers = snapshot.numChildren();
+           var children = snapshot.numChildren();
            console.log(snapshot.val());
            // if 2 players are playing already, alert player
-           if ( numPlayers > 1)  {
-              alert("Too many users");
-
+           if ( children > 1)  {
+              $(".modal-body").empty();
+               var tempDiv = $('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
+               $(".modal-body").append(tempDiv);
+               $(".modal-header").html("Game not Available.  Too many users.");
+               $("#myModal").modal("show");
            } else 
            // player can be added so create object to be added
            {
@@ -160,9 +170,10 @@ function addUser(event){
               user: user,
                            };
              
-             if ( numPlayers === 0) {
+             if (children === 0) {
                 // first player is being added
                  player = 1
+                 numPlayers = 1
                  console.log("user1 is added");
                  // displayWaiting; ***
              } else {
@@ -196,17 +207,24 @@ function addUser(event){
 };
 
 
+
+
+function displayCommentInp() {
+  $("#commentDisp").empty();
+ var tempDiv = $("<div class='form-group'>");
+  tempDiv.append("<label for = 'comment'>message:</label>");
+  tempDiv.append("<input id = 'comment' class = 'form-control type = 'text'>");
+  tempDiv.append("<button class='add-comment btn btn-primary'>Submit</button>");
+  $("#commentDisp").append(tempDiv);
+};
+
+
+
+
 // set up the page when game starts
 function establishPage() {
    console.log("establish Page");
-
-  var tempDiv = $("<label for = 'comment'>message:</label>");
-  tempDiv.append("<div class= 'form-control'id = 'comment' type = 'text'>");
-  tempDiv.append("<button class='add-comment'>Submit</button>");
-  $("#commentDisp").append(tempDiv);
-
-
-
+   $("#myModal").modal("hide");
    $("#players").html("players: "+ user + opponent);
    // display rock, paper, scissors
    for (var i = 0; i < choiceArr.length; i++) {
@@ -222,7 +240,9 @@ function establishPage() {
       console.log("Start Game");
       // display choices of RPS
       establishPage();
-     // Listen for a choice to be made
+       displayCommentInp()
+  
+       // Listen for a choice to be made
       $(document).on("click", ".choiceBtn", function() {
           choice = $(this).data("choice");
           // display player's choice
@@ -239,17 +259,27 @@ function establishPage() {
         // update the database
        updateuser(userArr);
        console.log("startgame: came back from updateuser ");
-  })
+  });
       
     };
  
+function showModal() {
+   $(".modal-body").empty();
+   var tempDiv = $('<button type="button" class="btn btn-default" id = ".logout">Log Out</button>');
+   $(".modal-body").append(tempDiv);
+  
+   $(".modal-header").html("Waiting for another Player");
 
+   $("#myModal").modal("show");
+
+};
 
 // restart the game
 function restartGame() {
     console.log("restartGame for user who is staying");
     numplayers = 1;
- 
+    console.log("call from restartgame "+" action:"+action+ player);
+    showModal();
     comment = "";
     choice = "";
     Oppchoice = "";
@@ -257,7 +287,7 @@ function restartGame() {
     loss = 0;
     ties = 0;
     opponent = "";
-    gameStarted = false;
+    
     results = "";
      userArr =  {  
             user: user,
@@ -275,7 +305,11 @@ function stopGame() {
     console.log("stop game: back from update user");
     updatePage();
     console.log("stop game: back from update page");
-    alert("game ended");
+  
+   $(".modal-body").empty();
+   $(".modal-body").html("GAME OVER");
+   $(".modal-header").empty();
+   $("#myModal").modal("show");
 };
 
 
@@ -339,8 +373,10 @@ function displayResults() {
 
 // add a comment to the database
 function addComment(){
+   console.log($('#comment').val());
+
    comment = $("#comment").val().trim();
-   $("#commentDisp").empty();
+   $("#comment").empty();
    firebase.database().ref('comments').push(
         {user: user,
          comment: comment}
@@ -420,7 +456,7 @@ function deleteComments(){
 games.on('child_removed', function(snapshot) {
   deleteComments();
   console.log("onChildRemoved " + " numplayers:" +  numPlayers + " user" + user + " action:" + action);
-  if (player != snapshot.key) {
+  if (player != snapshot.key & action != "end") {
     gameStarted = false;
     restartGame();
 

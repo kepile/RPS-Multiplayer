@@ -273,16 +273,19 @@ function establishPage() {
       
     };
 
-    
+
  
 function showModal() {
-   // $(".modal-body").empty();
+  if (player >= 1) {
+
+   $(".modal-body").empty();
    // var tempDiv = $('<button type="button" class="btn btn-default" data-dismiss="modal">Log Out</button>');
    // $(".modal-body").append(tempDiv);
   
    $(".modal-header").html("Waiting for another Player");
 
    $("#myModal").modal("show");
+ }
 
 };
 

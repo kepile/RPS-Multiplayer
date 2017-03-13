@@ -20,78 +20,77 @@ input[type=text] {
 	background-size: cover;
 }
 
+h1 {
+	font-size: 600%;
+}
 
+.container{
+	/*margin: 3%;*/
+	padding: 5%;
+	background-color: black;
+	height:;
+}
 
-.titl {
-font-size: 80pc;
-font-color: lightblue;
-text-align: center;
-font-family: 'Great Vibes', cursive;
+.add-user {
+	background-color: #c83c07;
+	margin: 1%;
 }
 
 
-.triviaBtn {
-	color: pink;
-	height: 50px;
-	width: 300px;
-	display:block;
-	margin-left: 150px;
+.gamer {
+	background-color: #c83c07;
+	margin: 1%;
+}
+
+.choiceBtn {
+	 /*display: inline-block;*/
+	 background-color: #c83c07;
+	margin: 2%;
+	width: 75px;
+}
+
+#comment {
 	text-align: center;
-	margin-top: 20px;
+		color: black;
+	font-size: 16px;
+
+}
+
+.form-group {
+	margin-top: 3%;
+}
+
+
+#listcomments {
+	color: black;
+	font-size: 16px;
+	margin-top: 1%;
+}
+
+#showresults {
+	border-color:  #c83c07;
+	border-width: 2px;
+	background-color:#e8aa81;
+	color: black;
 }
 
 .well {
 	background-color: #e8aa81;
 }
 
+
+.directions {
+	font-color: white;
+	font-size: 18px;
+	line-height: 19px;
 }
 
-button {
-	color:#e6953c;
+.playerDsp {
+	margin-bottom: 6px;
+
+	font-size: 18px;
+}
+	
+.modal {
 	color: black;
-	/*height: 50px;
-	width: 300px;
-	display:block;
-	margin-left: 150px;
-	text-align: center;
-	margin-top: 50px;
-*/}
-
-
-
-#question {
-	color:white;
-	font-size: 25px;
-	font-family: 'Quicksand', sans-serif;
-	margin: 10px;
-	text-align: center;
-}
-
-#counter {
-	color: white;
-	font-size: 40px;
-	margin: 25px;
-	padding-top: 25px;
-	text-align: center;
-}
-
-.screen {
-	margin-top: 20px;
-	margin-left:55px;
-}
-
-
-.results {
-	color: white;
-    font-size: 30px;
-	margin-left: 150px;
-	text-align: left;
-	margin-top: 20px;
-
-
-}
-
-.resultsFirst {
-	margin-top: 100px;
-}
-
+}	

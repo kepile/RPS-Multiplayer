@@ -23,7 +23,6 @@
     var userArr = {}
     var comment = "";
     var choice;
-    var Oppchoice;
     var wins = 0;
     var loss = 0;
     var ties = 0;
@@ -44,7 +43,6 @@ function initVar(){
     userArr = {}
     comment = "";
     choice = "";
-    Oppchoice = "";
     wins = 0;
     loss = 0;
     ties = 0;
@@ -61,11 +59,10 @@ function initVar(){
 function displaySignin() {
   initVar();
   tempDiv = $("<form class='form-inline'>" );
-  tempDiv.append("<div class= 'form-group'>");
   tempDiv.append("<label for='name-input'>Name:</label>");
   tempDiv.append("<input class='form-control' id='name-input' type='text'>");
   tempDiv.append("<button class='add-user'>Submit</button>");
-  tempDiv.append("</div></form>");
+  tempDiv.append("</form>");
   $("#connect").append(tempDiv);
 }
 
@@ -100,13 +97,16 @@ function removeuser() {
 // clear the page when a new game is played
 function clearPage() {
    $("#players").empty();
-      $("#game").html("");
-      $("#choiceBtn").html("");
-      $("#choice").empty();
-      $("#currentResults").html("");
-      $("#results").html("");
-      $("#listcomments").html(""); 
-
+   $("#opponent").empty();
+   $("#game").html("");
+   $("#choiceBtn").html("");
+   $("#mychoice").empty();
+   $("#oppchoice").empty();
+   $("#currentResults").html("");
+   $("#results").html("");
+   $("#listcomments").html(""); 
+   $("#commentform").html(""); 
+    $("#commentDisp").empty();
 
 };
      
@@ -117,7 +117,8 @@ function clearPage() {
 function updatePage() {
   console.log("updatePage action:" + action);
   if (action ==="begin") {
-      var tempBtn = $("<button>").html("Log out").attr("class", "logout");
+      var tempBtn = $("<button class='logout btn gamer'>Log Out</button>");
+       // $("<button>").html("Log out").attr("class", "logout").attr("class", "gamer");
       $("#signOut").append(tempBtn);
       $("#connect").html("");
       console.log(numPlayers);
@@ -208,13 +209,13 @@ function addUser(event){
 
 
 
-
+// display input field for comments
 function displayCommentInp() {
   $("#commentDisp").empty();
- var tempDiv = $("<div class='form-group'>");
-  tempDiv.append("<label for = 'comment'>message:</label>");
-  tempDiv.append("<input id = 'comment' class = 'form-control type = 'text'>");
-  tempDiv.append("<button class='add-comment btn btn-primary'>Submit</button>");
+  var tempDiv = $("<form class='form-inline'>" );
+  tempDiv.append("<label for = 'comment'>Message:</label>");
+  tempDiv.append("<input id = 'comment' class = 'form-control' placeholder='Message your opponent here' type = 'text'>");
+  tempDiv.append("<button class='add-comment btn gamer'>Submit</button>");
   $("#commentDisp").append(tempDiv);
 };
 
@@ -225,11 +226,18 @@ function displayCommentInp() {
 function establishPage() {
    console.log("establish Page");
    $("#myModal").modal("hide");
-   $("#players").html("players: "+ user + opponent);
+   $("#players").html("Player: " + user).attr("class", "playerDsp");
+   $("#opponent").html("Opponent: " + opponent).attr("class", "playerDsp");
+   var temp = $("<p>").html("PICK ONE").attr("class", "directions");
+   temp.append("</p>");
+   $("#game").append(temp);
    // display rock, paper, scissors
    for (var i = 0; i < choiceArr.length; i++) {
       console.log(choiceArr[i]);
       var gameBtn = $("<button>").html(choiceArr[i]).attr("class", "choiceBtn").attr("data-choice", choiceArr[i]);
+      
+      
+      // html(choiceArr[i]).attr("class", "choiceBtn").attr("class", "choiceBtn").attr("data-choice", choiceArr[i]);
        $("#game").append(gameBtn);
      };
 };
@@ -240,14 +248,16 @@ function establishPage() {
       console.log("Start Game");
       // display choices of RPS
       establishPage();
-       displayCommentInp()
+      displayCommentInp();
   
        // Listen for a choice to be made
       $(document).on("click", ".choiceBtn", function() {
           choice = $(this).data("choice");
+          $("#mychoice").empty();
+          $("#oppchoice").empty();
           // display player's choice
           $(this).removeData("choice");
-          $("#choice").html("Your Choice: " + choice);
+          $("#mychoice").append("Your Choice: " + choice);
           $("#currentResults").html("");
         console.log(choice);
         $("#game").html("");
@@ -262,11 +272,13 @@ function establishPage() {
   });
       
     };
+
+    
  
 function showModal() {
-   $(".modal-body").empty();
-   var tempDiv = $('<button type="button" class="btn btn-default" id = ".logout">Log Out</button>');
-   $(".modal-body").append(tempDiv);
+   // $(".modal-body").empty();
+   // var tempDiv = $('<button type="button" class="btn btn-default" data-dismiss="modal">Log Out</button>');
+   // $(".modal-body").append(tempDiv);
   
    $(".modal-header").html("Waiting for another Player");
 
@@ -282,7 +294,6 @@ function restartGame() {
     showModal();
     comment = "";
     choice = "";
-    Oppchoice = "";
     wins = 0;
     loss = 0;
     ties = 0;
@@ -341,17 +352,10 @@ function determineWinner(choice, choiceOpp) {
               console.log(user + " log loss");
               };
 
-      userArr =  {  
-        user: user,
-        loss: loss,
-        wins: wins,
-        ties: ties 
-      };
        choice = "";
        choicOpp = "";
-       updateuser(userArr);
        displayResults();
-              console.log("came back from updateuser determineWinner");
+              console.log("came back from displayresults determineWinner");
 
 
     };
@@ -376,7 +380,7 @@ function addComment(){
    console.log($('#comment').val());
 
    comment = $("#comment").val().trim();
-   $("#comment").empty();
+   displayCommentInp();
    firebase.database().ref('comments').push(
         {user: user,
          comment: comment}
@@ -387,7 +391,7 @@ function addComment(){
 
 // display a new comment on the screen
 function displayComment(obj){
-  var tempDiv = $("<div>").html(obj.user + ": " + obj.comment);
+  var tempDiv = $("<div>").html(obj.user + ": " + obj.comment).attr("class", "commentform");
   $("#listcomments").prepend(tempDiv);
 };
 
@@ -471,23 +475,24 @@ database.ref().on('child_changed', function(snapshot) {
   if (choice != ""  &
       snapshot.child("1/choice").exists() & 
       snapshot.child("2/choice").exists()){
-
       var dbObj = snapshot.val();
       console.log("user1 " + dbObj[1].choice + "user2 " + dbObj[2].choice);  
       if (player === 1) {
-         $("#choice").html("Your choice: " + dbObj[1].choice);
-         var tempBr = $("<br>");
-         var tempDiv = $("<div>").html(dbObj[2].user + ": " + dbObj[2].choice);
-         $("#choice").append(tempBr).append(tempDiv);
+         $("#oppchoice").append("Your opponent's choice: " + dbObj[2].choice);
+         // var tempBr = $("<br>");
+         // var tempDiv = $("<div>").html(dbObj[2].user + ": " + dbObj[2].choice);
+         // $("#choice").append(tempBr).append(tempDiv);
           determineWinner(dbObj[1].choice, dbObj[2].choice);
       } else {
-          determineWinner(dbObj[2].choice, dbObj[1].choice);
-          var tempBr = $("<br>");
-         var tempDiv = $("<div>").html(dbObj[1].user + ": " + dbObj[1].choice);
-         $("#choice").append(tempBr).append(tempDiv);
-          
+           $("#oppchoice").append("Your opponent's choice: " + dbObj[1].choice);
+           determineWinner(dbObj[2].choice, dbObj[1].choice);
       };
-     establishPage();   
+      userArr =  {  
+        user: user
+     };
+     establishPage();  
+     updateuser(userArr);
+     
   };
 });
 
@@ -497,31 +502,4 @@ commentRef.on('child_added', function(snapshot){
     
   
    
-      
-      // Getting an array of each key In the snapshot object
-      // var svArr = Object.keys(sv);
-
-      // Finding the last user's key
-      // var lastIndex = svArr.length - 1;
-
-      // var lastKey = svArr[lastIndex];
-
-      // Using the last user's key to access the last added user object
-      // var lastObj = sv[lastKey]
-
-      // Console.loging the last user's data
-      // console.log(lastObj.name);
-      // console.log(lastObj.email);
-      // console.log(lastObj.age);
-      // console.log(lastObj.comment);
-
-      // Change the HTML to reflect
-      // $("#name-display").html(lastObj.name);
-      // $("#email-display").html(lastObj.email);
-      // $("#age-display").html(lastObj.age);
-      // $("#comment-display").html(lastObj.comment);
-
-      // Handle the errors
-    // }, function(errorObject) {
-    //   console.log("Errors handled: " + errorObject.code);
-    // });
+ 

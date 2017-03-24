@@ -72,11 +72,25 @@ function displaySignin() {
 function updateuser(playerArr) {
 
   console.log("updateUser + " + player + " " + playerArr[player] );
+  var ref = firebase.database().ref('games/' + player);
+  ref.onDisconnect().remove();
 
       firebase.database().ref('games/' + player).set(
         playerArr
        );
- };
+// var user = database.ref('gmaes/'+player);
+// var connectedRef = database.ref(".info/connected");
+// When the client's connection state changes...
+// connectedRef.on("value", function(snap) {
+//     console.log(snap.val()) 
+//      user.onDisconnect.remove();
+ // user.onDisconnect().remove()
+ // });
+};
+
+
+
+
 
 
 
@@ -501,8 +515,38 @@ database.ref().on('child_changed', function(snapshot) {
 
 commentRef.on('child_added', function(snapshot){
   displayComment(snapshot.val());
-})
+});
     
   
-   
+// var connectedRef = database.ref(".info/connected");
+
+// When the client's connection state changes...
+// connectedRef.on("value", function(snap) {
+
+  // If they are connected..
+  // if (snap.val()) {
+
+    // Add user to the connections list.
+//  console.log("connected");
+// connectedRef.ondisconnect, function() {
+// removeuser;
+
+//   };
+// }
+//   });
+
+// var connectedRef = firebase.database().ref('.info/connected');
+// connectedRef.onDisconnect
+// // connectedRef.on('value', function(connectedSnap) {
+// //   if (connectedSnap.val() === true) {
+// //     console.log("connected");
+// //   } else {
+// //     console.log("disconnected");
+// //     if (player != ""){
+// //       removeuser;
+// //     };
+
+// }
+// });
+
  
